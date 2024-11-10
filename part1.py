@@ -30,7 +30,14 @@ try:
     pygame.mixer.music.set_volume(0.3)  # Установка громкости
     pygame.mixer.music.play(-1)  # Циклическое воспроизведение
 except pygame.error as e:
-    print(f"Не удалось загрузить или воспроизвести звук: {e}")
+    print(f"Не удалось загрузить или воспроизвести фоновый звук улицы: {e}")
+
+# Звук шагов Кирилла
+try:
+    walk_sound = pygame.mixer.Sound('./assets/sfx/walk_out.mp3')
+    walk_sound.set_volume(0.5)  # Установка громкости для шагов
+except pygame.error as e:
+    print(f"Не удалось загрузить звук шагов: {e}")
 
 # Скорость изменения размера
 shrink_rate = 3  # Увеличенная скорость уменьшения при движении вперед
@@ -53,32 +60,45 @@ while running:
     # Получение состояния нажатых клавиш
     keys = pygame.key.get_pressed()
 
+    # Проверка, двигается ли персонаж
+    is_moving = False
+
     # Уменьшение при нажатии W
     if keys[pygame.K_w] and character_size > final_size and not reached_min_size:
         character_size -= shrink_rate  # Увеличенная скорость уменьшения
         character = pygame.transform.scale(character_image, (character_size, character_size))
         character_rect = character.get_rect(center=character_rect.center)
+        is_moving = True
 
     # Увеличение при нажатии S
     if keys[pygame.K_s] and character_size < initial_size:
         character_size += grow_rate
         character = pygame.transform.scale(character_image, (character_size, character_size))
         character_rect = character.get_rect(center=character_rect.center)
+        is_moving = True
+
+    # Управление звуком шагов
+    if is_moving:
+        if not pygame.mixer.Sound.get_num_channels(walk_sound):
+            walk_sound.play(-1)  # Воспроизведение звука шагов в цикле
+    else:
+        walk_sound.stop()  # Остановить звук шагов, когда движение прекращается
 
     # Проверка на достижение минимального размера и запуск плавного исчезновения
     if character_size <= final_size and not reached_min_size:
         reached_min_size = True
-        pygame.mixer.music.stop()  # Остановить фоновый звук
+        pygame.mixer.music.stop()  # Остановить фоновый звук улицы
+        walk_sound.stop()  # Остановить звук шагов
 
-    # Плавное исчезновение персонажа
+    # Плавное исчезновение персонажа с увеличенной скоростью
     if reached_min_size:
-        for alpha in range(255, -1, -5):
+        for alpha in range(255, -1, -15):  # Увеличение шага до 15 для более быстрого исчезновения
             screen.fill((0, 0, 0))  # Черный экран
             screen.blit(background, (0, 0))
             character.set_alpha(alpha)
             screen.blit(character, character_rect)
             pygame.display.flip()
-            pygame.time.delay(50)
+            pygame.time.delay(30)  # Уменьшение задержки для ускорения
         reached_min_size = False  # Остановка дальнейшего уменьшения после исчезновения
         running = False  # Завершение цикла
 
