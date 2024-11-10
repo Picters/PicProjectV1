@@ -121,7 +121,7 @@ while running:
                     subprocess.Popen(['python', 'history.py'])
                     
                     # Задержка на черном экране 3 секунды
-                    pygame.time.delay(3000)
+                    pygame.time.delay(5000)
 
                     pygame.quit()
                     sys.exit()  # Закрытие menu.py после черного экрана

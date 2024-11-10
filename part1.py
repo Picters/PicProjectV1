@@ -1,6 +1,7 @@
 import pygame
 import sys
 import subprocess
+import os
 
 # Инициализация Pygame
 pygame.init()
@@ -113,9 +114,10 @@ while running:
 # Черный экран на 3 секунды перед переходом к part2.py
 screen.fill((0, 0, 0))
 pygame.display.flip()
-pygame.time.delay(3000)
+pygame.time.delay(5000)
+python_path = sys.executable
 
 # Переход на part2.py
-subprocess.Popen(['python', 'part2.py'])
+subprocess.Popen([python_path, os.path.join(os.getcwd(), 'part2.py')])
 pygame.quit()
 sys.exit()

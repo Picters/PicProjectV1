@@ -111,7 +111,7 @@ ambience_sound.stop()
 # Показ черного экрана на 3 секунды перед переходом к part1.py
 screen.fill(BLACK)
 pygame.display.flip()
-pygame.time.delay(3000)
+pygame.time.delay(5000)
 
 # Запуск part1.py
 subprocess.Popen(['python', 'part1.py'])
