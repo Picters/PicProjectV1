@@ -47,10 +47,14 @@ show_warning = True
 show_headphones_warning = False
 menu_active = False  # Блокировка кнопок до появления меню
 
-# Функция для плавного появления и исчезновения текста
+# Функция для плавного появления и исчезновения текста с обработкой событий
 def fade_in_out_text(text_surface, rect, fade_in=True, fade_out=True, delay=50):
     if fade_in:
         for alpha in range(0, 256, 5):
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
             text_surface.set_alpha(alpha)
             screen.fill(BLACK)
             screen.blit(text_surface, rect)
@@ -58,6 +62,10 @@ def fade_in_out_text(text_surface, rect, fade_in=True, fade_out=True, delay=50):
             pygame.time.delay(delay)
     if fade_out:
         for alpha in range(255, -1, -5):
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
             text_surface.set_alpha(alpha)
             screen.fill(BLACK)
             screen.blit(text_surface, rect)
